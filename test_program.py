@@ -23,7 +23,7 @@ class VPNInstance:
         self.port=port
 
 
-configFile="config.txt" #main config file name
+configFile="config.json" #main config file name
 outFile = "output.csv" #test data output file name
 
 serverInstance=VPNInstance()
@@ -52,7 +52,6 @@ def InitiateSpeedtest(instanceServer,instanceClient):
 
         #wait for OpenVPN client to become active
         while(status["data"]["client"]["status"] != "1"):
-            try:
                 #if client doesn't activate in 20 seconds, disables
                 #and enables the client
                 if(counter>0 and counter%20==0):
@@ -68,15 +67,6 @@ def InitiateSpeedtest(instanceServer,instanceClient):
                 counter+=1
                 sleep(1)
                 status=vpn_setup.VPNStatus(instanceClient) #gets status for next loop iteration
-            except ConnectionError as e:
-                print(e)
-                #if disconnects, tries to log in again and continues the loop
-                newToken=vpn_setup.Login(instanceClient)
-                if(instanceClient.type=="client"):
-                    global clientInstance
-                    clientInstance.token=newToken
-                    instanceClient=clientInstance
-                continue
 
         print("\nA connection has been established\n")
 
@@ -88,13 +78,13 @@ def InitiateSpeedtest(instanceServer,instanceClient):
         results = speed_test.SSHSequence(instanceServer, instanceClient)
 
         print("Final speed test results:")
-        print('{label1:<15}  {label2:<15}  {label3:<15}'.format(
+        print('|{label1:<10}|{label2:<10}|{label3:<10}|'.format(
                 label1="Time", label2="Download", label3="Upload"))
         #if results complete, print to terminal and save to file
         if(len(results[0])==10 and len(results[1])==10 and len(results[2])==10):
            for i in range(10):
                 data=[results[0][i], results[1][i], results[2][i]]
-                print('{time:<15}  {down:<15}  {up:<15}'.format(
+                print('|{time:>10}|{down:>10}|{up:>10}|'.format(
                     time=results[0][i], down=results[1][i], up=results[2][i]))
                 files.WriteData(outFile, data)
         else:

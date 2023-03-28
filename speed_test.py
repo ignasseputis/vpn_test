@@ -90,7 +90,7 @@ def SSHSequence(instance1, instance2):
         ssh2=SSHConnect(instance2.url,instance2.port, instance2.user, instance2.pwd)
     
         #executes download test
-        lines2, errs2=SSHComm(ssh2, "iperf3 -R -c 172.16.10.1")
+        lines2, errs2=SSHComm(ssh2, "iperf3 -f m -R -c 172.16.10.1")
     
         #stores data in lists if no errors from command
         if(len(errs2)==0):
@@ -100,12 +100,12 @@ def SSHSequence(instance1, instance2):
                 results[0].append(parts[2])
                 results[1].append(parts[6])
         else:
-            sys.exit("Download test has failed.\n"+errs2)
+            sys.exit("Download test has failed.\n"+str(errs2))
 
         print("Starting upload test...")
 
         #executes upload test
-        lines3, errs3=SSHComm(ssh2, "iperf3 -c 172.16.10.1")
+        lines3, errs3=SSHComm(ssh2, "iperf3 -f m -c 172.16.10.1")
 
         #stores data in lists if no errors from command
         if(len(errs3)==0):
