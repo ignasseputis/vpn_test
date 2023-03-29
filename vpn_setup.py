@@ -46,6 +46,7 @@ def DeviceInfo(instance, retries=0):
             print("\n{instanceName} device information:\nDevice name:\n{name}\nDevice serial No.:\n{serial}\n"
             .format(instanceName=instance.name,name=resp["data"]["static"]["device_name"],
                   serial=resp["data"]["mnfinfo"]["serial"]))
+            return resp["data"]["static"]["device_name"]
     except OSError  as err:
         print("Not responding. Trying again...")
         if(retries<5):
@@ -76,13 +77,13 @@ def VPNStatus(instance, retries=0):
     }
     try:
         #sends get request
-        resp=requests.get(instance.baseURL+"api/services/openvpn/status/",headers=headers, timeout=5).json()
+        resp=requests.get(instance.baseURL+"api/services/openvpn/status/",headers=headers, timeout=10).json()
         if(resp["success"]==False):
             sys.exit("Cannot get {name} VPN status".format(name=instance.name))
         else:
             return resp   
     except OSError  as err:
-        print("Not responding. Trying again...")
+        print("Not responding. Trying again... (status)")
         if(retries<5):
             return VPNStatus(instance,retries+1)
         else:
@@ -142,7 +143,7 @@ def DeleteVPN(instance, name, retries=0):
         sys.exit("Could not get data due to key error:\n{0}".format(err))
 
 #sets the device's openvpn config to the settings from the config file
-def SetConfig(instance, retries=0):
+def SetBaseConfig(instance, retries=0):
     url=instance.baseURL+ "api/services/openvpn/config/" + instance.name
     try:
         headers={
@@ -150,7 +151,7 @@ def SetConfig(instance, retries=0):
         "Authorization": "Bearer "+instance.token
         }
         #sets request body to instance config
-        body=instance.config
+        body=instance.tls_config
         #sets id and type to the ones from config
         body["data"]["id"]=instance.name
         body["data"]["type"]=instance.type
@@ -165,11 +166,41 @@ def SetConfig(instance, retries=0):
     except OSError  as err:
         print("Not responding. Trying again...")
         if(retries<5):
-            return SetConfig(instance,retries+1)
+            return SetBaseConfig(instance,retries+1)
         else:
             sys.exit("Device is unresponsive. Quitting...")
     except KeyError as err:
         sys.exit("Could not get data due to key error:\n{0}".format(err))
+
+def SetTestConfig(instance, data, confName, retries=0):
+    url=instance.baseURL+ "api/services/openvpn/config/" + instance.name
+    try:
+        headers={
+        "Content-Type":"application/json",
+        "Authorization": "Bearer "+instance.token
+        }
+        #sets request body to instance config
+        body={"data":data}
+        #sets id and type to the ones from config
+    
+    
+        #sends put request
+        resp=requests.put(url, json=body, headers=headers, timeout=5).json()
+        if(resp["success"]==True):
+            print("The {name} configuration was set to {conf}.\n".format(name=instance.name, conf=confName))
+        else:
+            sys.exit("Setting the {name} configuration failed.".format(name=instance.name))
+        return resp["success"]
+    
+    except OSError  as err:
+        print("Not responding. Trying again...")
+        if(retries<5):
+            return SetTestConfig(instance,data, confName,retries+1)
+        else:
+            sys.exit("Device is unresponsive. Quitting...")
+    except KeyError as err:
+        sys.exit("Could not get data due to key error:\n{0}".format(err))
+    
 
 def main():
     pass

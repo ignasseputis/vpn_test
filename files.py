@@ -32,17 +32,26 @@ def ReadCredentials(filename):
     except IOError as err:
         sys.exit("Reading the configuration file was not successful:\n{0}".format(err))
     
+def ReadTestConfigs(filename):
+    try:
+        mainConfig = json.loads(open(filename).read())
+        credentialsFTP=mainConfig["tests"]
+        return credentialsFTP
+    except KeyError as err:
+        sys.exit("Could not get data due to key error:\n{0}".format(err))
+    except IOError as err:
+        sys.exit("Reading the configuration file was not successful:\n{0}".format(err))
 
 #sends file over FTP
-def SendFileFTP(filename, credentials):
+def SendFileFTP(filename, credentials, deviceName, uploadDirectory):
     #connects to FTP server
     try:
         ftp=ftplib.FTP()
         ftp.connect(credentials["ip_addr"], int(credentials["port"]))
         ftp.login(credentials["user"], credentials["pwd"])
-    
+        ChangeDir(ftp, uploadDirectory)
         #generates new file name
-        newName="output {date}.csv".format(date=str(datetime.now())[0:19], file=filename)
+        newName="{device} {date}.csv".format(date=str(datetime.now())[0:19],device=deviceName, file=filename)
         #sends file
         ftp.storbinary('STOR '+newName, open(filename, 'rb'))
         #disconnects from server
@@ -51,6 +60,15 @@ def SendFileFTP(filename, credentials):
         sys.exit("Could not get data due to key error:\n{0}".format(err))
     except ftplib.all_errors as err:
         sys.exit("Could not send file due to FTP error:\n{0}".format(err))
+
+
+def ChangeDir(ftp, uploadDir):
+    if uploadDir != "":
+        try:
+            ftp.cwd(uploadDir)
+        except ftplib.all_errors:
+            ftp.mkd(uploadDir.split("/")[-1])
+            ftp.cwd(uploadDir)
 
 #returns openvpn instance after reading config file of
 #selected type
@@ -65,14 +83,17 @@ def GetInstance(filename, type):
         instanceUser=instanceData["user"]
         instancePwd=instanceData["pwd"]
         instancePort=instanceData["port"]
-        instanceConfig={"data" : instanceData["data"]}
+        instanceTLSConfig={"data" : instanceData["tls_config"]}
+        instanceTLSPwdConfig={"data" : instanceData["tls_pwd_config"]}
+        instancePwdConfig={"data" : instanceData["pwd_config"]}
+        instancePSKConfig={"data" : instanceData["psk_config"]}
         instanceFiles=instanceData["files"]
     except KeyError as err:
         sys.exit("Could not get data due to key error:\n{0}".format(err))
     #creates new instance from variables
     instance=VPNInstance(baseInstanceURL, instanceType, 
-                        instanceName, instanceConfig, instanceFiles, 
-                        instanceUser, instancePwd, instancePort)
+                        instanceName, instanceTLSConfig, instanceTLSPwdConfig, instancePwdConfig,
+                         instancePSKConfig, instanceFiles, instanceUser, instancePwd, instancePort)
     return instance
 
 #uploads one of the certificate files to device
@@ -80,13 +101,14 @@ def UploadFile(file, fileType, instance, retries=0):
     http = urllib3.PoolManager(timeout=5)
     #file upload url
     url = instance.baseURL + "api/services/openvpn/config/" + instance.name
+    filename=file.split('/')[-1]
     #forming multi-part form data request
     try:
         req=http.request("POST", 
                    url, 
                    fields={
                         'option': fileType, 
-                        "file":(file, open(file).read())},
+                        "file":(filename, open(file).read())},
                     headers={
                             "Authorization": "Bearer "+ instance.token
                             },
