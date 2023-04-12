@@ -1,12 +1,13 @@
-
 import requests
 import sys
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import json
+from time import sleep
 
-#logs in to the device and returns jwt token for further requests
+#logs  in to the device and returns jwt token for further requests
 def Login(instance, retries=0):
-    print("Trying to connect to {0}".format(instance.baseURL))
+    print("Trying to connect to {0} at {1}".format(instance.type,instance.baseURL))
     try:
         headers={"Content-Type":"application/json"}
         #login credentials
@@ -15,7 +16,7 @@ def Login(instance, retries=0):
         #sends login post request
         resp=requests.post(instance.baseURL+"api/login", json=params, headers=headers,timeout=5).json()
         if(resp["success"]==True):
-            print("Login to "+instance.baseURL+" was successful")
+            print("Login to "+instance.baseURL+" was successful\n")
             #returns jwt token
             token=resp["jwtToken"]
             return token
@@ -23,12 +24,17 @@ def Login(instance, retries=0):
             sys.exit("Unsuccessful login. Quitting...")
     except OSError  as err:
         print("Not responding. Trying again...")
-        if(retries<5):
+        if(retries<50):
+            sleep(5)
             return Login(instance,retries+1)
         else:
             sys.exit("Couldn't connect to {0}. Quitting...".format(instance.baseURL))
     except KeyError as err:
         sys.exit("Could not get data due to key error:\n{0}".format(err))
+    except json.decoder.JSONDecodeError as err:
+        sys.exit("Selected IP address returned a response that isn't readable. Quitting...")
+
+
 
 #gets and displays basic device info
 def DeviceInfo(instance, retries=0):
@@ -41,6 +47,16 @@ def DeviceInfo(instance, retries=0):
         resp=requests.get(instance.baseURL + "api/system/device/info",headers=headers, timeout=5).json()
         if(resp["success"]==False):
             print("Couldn't get {name} device info".format(name=instance.name))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            if(instance.type=="client"):
+                instance.token=jwtToken
+                global clientInstance
+                clientInstance=instance
+            raise OSError
         else:
             #displays device name and serial number
             print("\n{instanceName} device information:\nDevice name:\n{name}\nDevice serial No.:\n{serial}\n"
@@ -79,11 +95,21 @@ def VPNStatus(instance, retries=0):
         #sends get request
         resp=requests.get(instance.baseURL+"api/services/openvpn/status/",headers=headers, timeout=10).json()
         if(resp["success"]==False):
-            sys.exit("Cannot get {name} VPN status".format(name=instance.name))
+            print("Cannot get {name} VPN status".format(name=instance.name))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            if(instance.type=="client"):
+                instance.token=jwtToken
+                global clientInstance
+                clientInstance=instance
+            raise OSError
         else:
             return resp   
     except OSError  as err:
-        print("Not responding. Trying again... (status)")
+        print("Not responding. Trying again... ")
         if(retries<5):
             return VPNStatus(instance,retries+1)
         else:
@@ -104,9 +130,19 @@ def CreateVPNInstance(instance, retries=0):
         #sends post request 
         resp=requests.post(instance.baseURL+"api/services/openvpn/config", json=params, headers=headers, timeout=5).json()
         if(resp["success"]==True):
-            print("New {type} instance created: {name}.".format(type=instance.type, name=instance.name))
+            print("New {type} instance created: {name}.\n".format(type=instance.type, name=instance.name))
         else:
-            print("New {type} instance could not be created".format(type=instance.type))
+            print("New {type} instance could not be created\n".format(type=instance.type))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            if(instance.type=="client"):
+                instance.token=jwtToken
+                global clientInstance
+                clientInstance=instance
+            raise OSError
         return resp["success"] 
     except OSError  as err:
         print("Not responding. Trying again...")
@@ -132,7 +168,17 @@ def DeleteVPN(instance, name, retries=0):
         if(resp["success"]==True):
             print("Successfully removed {name} instance".format(name=name))
         else:
-            sys.exit("Removing {name} instance failed".format(name=name))
+            print("Removing {name} instance failed".format(name=name))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            if(instance.type=="client"):
+                instance.token=jwtToken
+                global clientInstance
+                clientInstance=instance
+            raise OSError
     except OSError  as err:
         print("Not responding. Trying again...")
         if(retries<5):
@@ -143,7 +189,7 @@ def DeleteVPN(instance, name, retries=0):
         sys.exit("Could not get data due to key error:\n{0}".format(err))
 
 #sets the device's openvpn config to the settings from the config file
-def SetBaseConfig(instance, retries=0):
+def SetConfig(instance, conf, retries=0):
     url=instance.baseURL+ "api/services/openvpn/config/" + instance.name
     try:
         headers={
@@ -151,7 +197,7 @@ def SetBaseConfig(instance, retries=0):
         "Authorization": "Bearer "+instance.token
         }
         #sets request body to instance config
-        body=instance.tls_config
+        body=conf
         #sets id and type to the ones from config
         body["data"]["id"]=instance.name
         body["data"]["type"]=instance.type
@@ -161,46 +207,62 @@ def SetBaseConfig(instance, retries=0):
         if(resp["success"]==True):
             print("The {name} configuration was set successfully.\n".format(name=instance.name))
         else:
-            sys.exit("Setting the {name} configuration failed.".format(name=instance.name))
+            print(resp)
+            print("Setting the {name} configuration failed.".format(name=instance.name))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            if(instance.type=="client"):
+                instance.token=jwtToken
+                global clientInstance
+                clientInstance=instance
+            raise OSError
         return resp["success"]
     except OSError  as err:
         print("Not responding. Trying again...")
         if(retries<5):
-            return SetBaseConfig(instance,retries+1)
+            return SetConfig(instance, conf, retries+1)
         else:
             sys.exit("Device is unresponsive. Quitting...")
     except KeyError as err:
         sys.exit("Could not get data due to key error:\n{0}".format(err))
 
-def SetTestConfig(instance, data, confName, retries=0):
-    url=instance.baseURL+ "api/services/openvpn/config/" + instance.name
+def ChangeLAN(instance, connectionType, retries=0):
+    url=instance.baseURL+ "api/bulk"
+    if(connectionType=="tun"):
+        configLAN=instance.tun_lan
+    else:
+        configLAN=instance.tap_lan
     try:
         headers={
         "Content-Type":"application/json",
         "Authorization": "Bearer "+instance.token
         }
-        #sets request body to instance config
-        body={"data":data}
-        #sets id and type to the ones from config
-    
+        #sets request body to instance LAN config
+        body=configLAN
     
         #sends put request
-        resp=requests.put(url, json=body, headers=headers, timeout=5).json()
+        resp=requests.post(url, json=body, headers=headers, timeout=5).json()
+        sleep(5)
         if(resp["success"]==True):
-            print("The {name} configuration was set to {conf}.\n".format(name=instance.name, conf=confName))
+            print("The {0} LAN configuration was successfully set to {1}.\n".format(instance.name, resp["data"][0]["data"]["ipaddr"]))
         else:
-            sys.exit("Setting the {name} configuration failed.".format(name=instance.name))
+            print("Setting the {0} LAN configuration failed.:\n{1}".format(instance.name, str(resp)))
+            jwtToken=Login(instance)
+            if(instance.type=="server"):
+                instance.token=jwtToken
+                global serverInstance
+                serverInstance=instance
+            #raise OSError
         return resp["success"]
-    
     except OSError  as err:
-        print("Not responding. Trying again...")
+        print("Not responding. Trying again...:\n{0}".format(err))
         if(retries<5):
-            return SetTestConfig(instance,data, confName,retries+1)
+            return ChangeLAN(instance, configLAN, retries+1)
         else:
             sys.exit("Device is unresponsive. Quitting...")
-    except KeyError as err:
-        sys.exit("Could not get data due to key error:\n{0}".format(err))
-    
 
 def main():
     pass

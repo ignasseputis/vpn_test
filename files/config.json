@@ -1,0 +1,900 @@
+{
+  "server": {
+    "ip_addr": "188.69.226.114",
+    "inst_type": "server",
+    "inst_name": "server",
+    "user": "root",
+    "pwd": "Admin123",
+    "port": 22,
+    "files": {
+      "ca": "./files/ca.crt",
+      "cert": "./files/server.crt",
+      "key": "./files/server.key",
+      "dh": "./files/dh.pem",
+      "userpass": "./files/users.txt",
+      "secret": "./files/static.key",
+      "hmac": "./files/hmac.key"
+    },
+    "tun_lan_config": {
+      "data": [
+        {
+          "method": "PUT",
+          "data": {
+            ".type": "interface",
+            "stp": "0",
+            "fwzone": "lan",
+            "id": "lan",
+            "bridge": "1",
+            "ip6assign": "60",
+            "ifname": [
+              "eth0",
+              "tap0"
+            ],
+            "ipaddr": "192.168.1.1",
+            "netmask": "255.255.255.0",
+            "proto": "static",
+            "metric": "1",
+            "delegate": "1",
+            "force_link": "1",
+            "gateway": "",
+            "broadcast": "",
+            "dns": [
+              ""
+            ],
+            "macaddr": "",
+            "mtu": "",
+            "ip4table": "",
+            "ip6hint": "",
+            "ip6ifaceid": ""
+          },
+          "awaitNetwork": true,
+          "endpoint": "/api/network/interfaces/config/lan"
+        },
+        {
+          "method": "PUT",
+          "data": {
+            ".type": "dhcp",
+            "id": "lan",
+            "ignore": "enable",
+            "end_ip": "192.168.1.249",
+            "leasetime": "12h",
+            "force": "0",
+            "start_ip": "192.168.1.100",
+            "dynamicdhcp": "1",
+            "netmask": "",
+            "dhcp_option": [],
+            "force_options": "0",
+            "ra": "",
+            "dhcpv6": "",
+            "ndp": "",
+            "dns": [],
+            "domain": []
+          },
+          "awaitNetwork": false,
+          "endpoint": "/api/network/dhcp/servers/config/lan"
+        }
+      ]
+    },
+    "tap_lan_config": {
+      "data": [
+        {
+          "method": "PUT",
+          "data": {
+            ".type": "interface",
+            "stp": "0",
+            "fwzone": "lan",
+            "id": "lan",
+            "bridge": "1",
+            "ip6assign": "60",
+            "ifname": [
+              "eth0",
+              "tap0"
+            ],
+            "ipaddr": "192.168.2.2",
+            "netmask": "255.255.255.0",
+            "proto": "static",
+            "metric": "1",
+            "delegate": "1",
+            "force_link": "1",
+            "gateway": "",
+            "broadcast": "",
+            "dns": [
+              ""
+            ],
+            "macaddr": "",
+            "mtu": "",
+            "ip4table": "",
+            "ip6hint": "",
+            "ip6ifaceid": ""
+          },
+          "awaitNetwork": true,
+          "endpoint": "/api/network/interfaces/config/lan"
+        },
+        {
+          "method": "PUT",
+          "data": {
+            ".type": "dhcp",
+            "id": "lan",
+            "ignore": "enable",
+            "end_ip": "192.168.2.249",
+            "leasetime": "12h",
+            "force": "0",
+            "start_ip": "192.168.2.100",
+            "dynamicdhcp": "1",
+            "netmask": "",
+            "dhcp_option": [],
+            "force_options": "0",
+            "ra": "",
+            "dhcpv6": "",
+            "ndp": "",
+            "dns": [],
+            "domain": []
+          },
+          "awaitNetwork": false,
+          "endpoint": "/api/network/dhcp/servers/config/lan"
+        }
+      ]
+    },
+    "tun_tls_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "all",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tun",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "255.255.255.0",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": "172.16.10.0"
+      }
+    },
+    "tap_tls_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "all",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tap",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": ""
+      }
+    },
+    "tun_tls_pwd_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "all",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tun",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls/pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "userpass": "/etc/vuci-uploads/cbid.openvpn.server.userpassusers.txt",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "255.255.255.0",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": "172.16.10.0"
+      }
+    },
+    "tap_tls_pwd_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "all",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tap",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls/pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "userpass": "/etc/vuci-uploads/cbid.openvpn.server.userpassusers.txt",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": ""
+      }
+    },
+    "tun_pwd_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tun",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "userpass": "/etc/vuci-uploads/cbid.openvpn.server.userpassusers.txt",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "255.255.255.0",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": "172.16.10.0"
+      }
+    },
+    "tap_pwd_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tap",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": [],
+        "auth": "sha1",
+        "userpass": "/etc/vuci-uploads/cbid.openvpn.server.userpassusers.txt",
+        "ca": "/etc/vuci-uploads/cbid.openvpn.server.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.server.certserver.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.server.keyserver.key",
+        "dh": "/etc/vuci-uploads/cbid.openvpn.server.dhdh.pem",
+        "crl_verify": "",
+        "client_to_client": "0",
+        "server_netmask": "",
+        "duplicate_cn": "0",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "server_ip": ""
+      }
+    },
+    "tun_psk_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "",
+        "_keepalive_tls": "",
+        "proto": "udp",
+        "dev": "tun",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "skey",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": "",
+        "auth": "",
+        "ca": "",
+        "cert": "",
+        "key": "",
+        "dh": "",
+        "crl_verify": "",
+        "secret": "/etc/vuci-uploads/cbid.openvpn.server.secretstatic.key",
+        "client_to_client": "",
+        "server_netmask": "",
+        "duplicate_cn": "",
+        "_tls_auth": "",
+        "use_pkcs": "",
+        "_device_files": "",
+        "server_ip": "",
+        "network_mask": "",
+        "local_ip": "172.16.10.1",
+        "remote_ip": "172.16.10.2",
+        "network_ip": ""
+      }
+    },
+    "tap_psk_config": {
+      "data": {
+        "id": "server",
+        "type": "server",
+        ".type": "openvpn",
+        "port": "1194",
+        "_tls_cipher": "",
+        "_keepalive_tls": "10 120",
+        "proto": "udp",
+        "dev": "tap",
+        "enable": "1",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "skey",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "push": "",
+        "auth": "",
+        "ca": "",
+        "cert": "",
+        "key": "",
+        "dh": "",
+        "crl_verify": "",
+        "secret": "/etc/vuci-uploads/cbid.openvpn.server.secretstatic.key",
+        "client_to_client": "",
+        "server_netmask": "",
+        "duplicate_cn": "",
+        "_tls_auth": "",
+        "use_pkcs": "",
+        "_device_files": "",
+        "server_ip": ""
+      }
+    }
+  },
+  "client": {
+    "ip_addr": "192.168.2.1",
+    "inst_type": "client",
+    "inst_name": "client",
+    "user": "root",
+    "pwd": "Admin123",
+    "port": 22,
+    "files": {
+      "ca": "./files/ca.crt",
+      "cert": "./files/client.crt",
+      "key": "./files/client.key",
+      "secret": "./files/static.key",
+      "hmac": "./files/hmac.key"
+    },
+    "tun_tls_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "all",
+        "type": "client",
+        "port": "1194",
+        "dev": "tun",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.client.certclient.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.client.keyclient.key",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": ""
+      }
+    },
+    "tap_tls_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "all",
+        "type": "client",
+        "port": "1194",
+        "dev": "tap",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.client.certclient.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.client.keyclient.key",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": ""
+      }
+    },
+    "tun_tls_pwd_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "all",
+        "type": "client",
+        "port": "1194",
+        "dev": "tun",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls/pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.client.certclient.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.client.keyclient.key",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": "",
+        "user": "user",
+        "pass": "user"
+      }
+    },
+    "tap_tls_pwd_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "all",
+        "type": "client",
+        "port": "1194",
+        "dev": "tap",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "tls/pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.114",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "/etc/vuci-uploads/cbid.openvpn.client.certclient.crt",
+        "key": "/etc/vuci-uploads/cbid.openvpn.client.keyclient.key",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": "",
+        "user": "user",
+        "pass": "user"
+      }
+    },
+    "tun_pwd_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "",
+        "type": "client",
+        "port": "1194",
+        "dev": "tun",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "",
+        "key": "",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": "",
+        "user": "user",
+        "pass": "user"
+      }
+    },
+    "tap_pwd_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "",
+        "type": "client",
+        "port": "1194",
+        "dev": "tap",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "pass",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "sha1",
+        "_extra": [],
+        "ca": "/etc/vuci-uploads/cbid.openvpn.client.caca.crt",
+        "cert": "",
+        "key": "",
+        "network_mask": "",
+        "_tls_auth": "none",
+        "use_pkcs": "0",
+        "_device_files": "0",
+        "network_ip": "",
+        "decrypt": "",
+        "user": "user",
+        "pass": "user"
+      }
+    },
+    "tun_psk_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "",
+        "type": "client",
+        "port": "1194",
+        "dev": "tun",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "skey",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "",
+        "_extra": [],
+        "ca": "",
+        "cert": "",
+        "key": "",
+        "secret": "/etc/vuci-uploads/cbid.openvpn.client.secretstatic.key",
+        "network_mask": "",
+        "_tls_auth": "",
+        "use_pkcs": "",
+        "_device_files": "",
+        "network_ip": "",
+        "decrypt": "",
+        "local_ip": "172.16.10.2",
+        "remote_ip": "172.16.10.1"
+      }
+    },
+    "tap_psk_config": {
+      "data": {
+        "keepalive": "10 120",
+        "proto": "udp",
+        "id": "client",
+        ".type": "openvpn",
+        "_tls_cipher": "",
+        "type": "client",
+        "port": "1194",
+        "dev": "tap",
+        "enable": "1",
+        "enable_external": "0",
+        "enable_custom": "0",
+        "comp_lzo": "",
+        "_auth": "skey",
+        "cipher": "BF-CBC",
+        "_cipher_custom": "",
+        "remote": "188.69.226.116",
+        "resolv_retry": "infinite",
+        "auth": "",
+        "_extra": [],
+        "ca": "",
+        "cert": "",
+        "key": "",
+        "secret": "/etc/vuci-uploads/cbid.openvpn.client.secretstatic.key",
+        "network_mask": "",
+        "_tls_auth": "",
+        "use_pkcs": "",
+        "_device_files": "",
+        "network_ip": "",
+        "decrypt": ""
+      }
+    }
+  },
+  "tests": {
+    "cipher_test1": {
+      "cipher": "BF-CBC"
+    },
+    "cipher_test2": {
+      "cipher": "DES-CBC"
+    },
+    "cipher_test3": {
+      "cipher": "DES-EDE-CBC"
+    },
+    "cipher_test4": {
+      "cipher": "DES-EDE3-CBC"
+    },
+    "cipher_test5": {
+      "cipher": "DESX-CBC"
+    },
+    "cipher_test6": {
+      "cipher": "CAST5-CBC"
+    },
+    "cipher_test7": {
+      "cipher": "AES-128-CBC"
+    },
+    "cipher_test8": {
+      "cipher": "AES-192-CBC"
+    },
+    "cipher_test9": {
+      "cipher": "AES-256-CBC"
+    },
+    "cipher_test10": {
+      "cipher": "none"
+    },
+    "cipher_test11": {
+      "cipher": "RC2-CBC"
+    },
+    "cipher_test12": {
+      "cipher": "RC2-40-CBC"
+    },
+    "cipher_test13": {
+      "cipher": "RC2-64-CBC"
+    },
+    "cipher_test14": {
+      "cipher": "AES-128-CFB"
+    },
+    "cipher_test15": {
+      "cipher": "AES-128-CFB1"
+    },
+    "cipher_test16": {
+      "cipher": "AES-128-CFB8"
+    },
+    "cipher_test17": {
+      "cipher": "AES-128-OFB"
+    },
+    "cipher_test18": {
+      "cipher": "AES-128-GCM"
+    },
+    "cipher_test19": {
+      "cipher": "AES-192-CFB"
+    },
+    "cipher_test20": {
+      "cipher": "AES-192-CFB1"
+    },
+    "cipher_test21": {
+      "cipher": "AES-192-CFB8"
+    },
+    "cipher_test22": {
+      "cipher": "AES-192-OFB"
+    },
+    "cipher_test23": {
+      "cipher": "AES-192-GCM"
+    },
+    "cipher_test24": {
+      "cipher": "AES-256-GCM"
+    },
+    "cipher_test25": {
+      "cipher": "AES-256-CFB"
+    },
+    "cipher_test26": {
+      "cipher": "AES-256-CFB1"
+    },
+    "cipher_test27": {
+      "cipher": "AES-256-CFB8"
+    },
+    "cipher_test28": {
+      "cipher": "AES-256-OFB"
+    },
+    "auth_test1": {
+      "auth": "sha1"
+    },
+    "auth_test2": {
+      "auth": "none"
+    },
+    "auth_test3": {
+      "auth": "md5"
+    },
+    "auth_test4": {
+      "auth": "sha256"
+    },
+    "auth_test5": {
+      "auth": "sha384"
+    },
+    "auth_test6": {
+      "auth": "sha512"
+    },
+    "protocol_test1": {
+      "server": {
+        "proto": "udp"
+      },
+      "client": {
+        "proto": "udp"
+      }
+    },
+    "protocol_test2": {
+      "server": {
+        "proto": "tcp-server"
+      },
+      "client": {
+        "proto": "tcp-client",
+        "type": "client"
+      }
+    },
+    "lzo_test1": {
+      "comp_lzo": ""
+    },
+    "lzo_test2": {
+      "comp_lzo": "yes"
+    },
+    "lzo_test3": {
+      "comp_lzo": "no"
+    },
+    "tls_cipher_test1": {
+      "_tls_cipher": "all"
+    },
+    "tls_cipher_test2": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": "abc"
+    },
+    "tls_cipher_test3": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-AES-256-CBC-SHA"
+      ]
+    },
+    "tls_cipher_test4": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-AES-256-CBC-SHA256"
+      ]
+    },
+    "tls_cipher_test5": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-3DES-EDE-CBC-SHA"
+      ]
+    },
+    "tls_cipher_test6": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-AES-128-GCM-SHA256"
+      ]
+    },
+    "tls_cipher_test7": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-AES-128-CBC-SHA"
+      ]
+    },
+    "tls_cipher_test8": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-AES-128-CBC-SHA256"
+      ]
+    },
+    "tls_cipher_test9": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-SEED-CBC-SHA"
+      ]
+    },
+    "tls_cipher_test10": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-CAMELLIA-128-CBC-SHA"
+      ]
+    },
+    "tls_cipher_test11": {
+      "_tls_cipher": "dhe_rsa",
+      "tls_cipher": [
+        "TLS-DHE-RSA-WITH-DES-CBC-SHA"
+      ]
+    },
+    "hmac_test1": {
+      "_tls_auth": "none",
+      "tls_auth": "",
+      "key_direction": ""
+    },
+    "hmac_test2": {
+      "_tls_auth": "tls-crypt",
+      "tls_crypt": "/etc/vuci-uploads/cbid.openvpn.server.tls_crypthmac.key",
+      "key_direction": ""
+    },
+    "hmac_test3": {
+      "_tls_auth": "tls-auth",
+      "tls_auth": "/etc/vuci-uploads/cbid.openvpn.server.tls_authhmac.key",
+      "key_direction": "1"
+    }
+  },
+  "ftp": {
+    "ip_addr": "127.0.0.1",
+    "user": "studentas",
+    "pwd": "studentas",
+    "port": "21"
+  }
+}
