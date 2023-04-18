@@ -1,5 +1,5 @@
 RUTX10
-"Connection type: tap, Authentication type: PSK, Protocol: udp, LZO: yes, Encryption protocol: BF-CBC"
-0.00-1.00,4.4,5.74
-1.00-2.00,8.91,10.2
-2.00-3.00,12.0,15.5
+"Connection type: tun, Authentication type: tls, Protocol: udp, LZO: , Encryption protocol: BF-CBC, TLS cipher: all, Authentication algorithm: none, Additional HMAC authentication: none"
+0.00-1.00,6.82,4.99
+1.00-2.00,15.2,13.1
+2.00-3.00,21.1,10.9
