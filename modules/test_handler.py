@@ -116,7 +116,7 @@ class TestHandler:
         sleep(5)
 
         speedTest=SpeedTest(server=self.instanceServer, client=self.instanceClient, output=self.outFile, csv=self.csv)
-        speedTest.InitiateSpeedtest(infoLine, self.arguments.test_count, self.arguments.test_length, connection, parameters)
+        speedTest.InitiateSpeedtest(self.arguments.test_count, self.arguments.test_length, connection, parameters)
 
         #self.SendFile()
 
@@ -127,7 +127,7 @@ class TestHandler:
         if(os.path.isfile(self.outFile)):
             print("Sending {0} data file to FTP server...".format(self.outFile))
             #sends data file to FTP server
-            self.ftp.SendFile(self.outFile, self.instanceClient.deviceName)
+            self.ftp.SendFile(self.outFile, self.instanceClient.deviceInfo["name"])
             print("File transfer was successful.")
         else:
             print("{filename} file does not exist.".format(filename=self.outFile))

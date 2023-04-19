@@ -12,6 +12,10 @@ class SSHInstance:
         self.results=[]
         self.downloadResults=[]
         self.uploadResults=[]
+        self.downTestAverage=[]
+        self.upTestAverage=[]
+        self.overallAverage=[]
+            
 
     def SSHConnect(self):#, host, port, user, pwd):
         try:
@@ -48,6 +52,18 @@ class SSHInstance:
             finalResults.append(round(sum(values)/float(len(values)),2))
         return finalResults
     
+    def AverageOverallValue(self,interimResults):
+        values=[]
+        for i in range(len(interimResults)):
+            values+=interimResults[i]
+        values=[float(value) for value in values]
+        return [round(sum(values)/float(len(values)),2)]
+
+    def AverageTestValue(self, results):
+        
+        average=round(sum(results)/float(len(results)),2)
+        return average
+    
     def ServerSequence(self):
         print("Setting up iperf3 listener... " + self.host)
         #connects to server instance
@@ -64,6 +80,9 @@ class SSHInstance:
             self.results=[]
             self.downloadResults=[]
             self.uploadResults=[]
+            self.downTestAverage=[]
+            self.upTestAverage=[]
+            
 
             self.results.append(self.GetLabels(test_length))
             print("Starting download test...")
@@ -72,6 +91,7 @@ class SSHInstance:
                 results, errs = self.TestDownload(test_length, connectionType)
                 if(len(errs)==0):
                     self.downloadResults.append(results)
+                    self.downTestAverage.append(self.AverageTestValue(results))
                     print("{0}/{1}".format(i+1,test_count))
                 else:
                     print(errs)
@@ -85,22 +105,26 @@ class SSHInstance:
                 results, errs = self.TestUpload(test_length, connectionType)
                 if(len(errs)==0):
                     self.uploadResults.append(results)
+                    self.upTestAverage.append(self.AverageTestValue(results))
                     print("{0}/{1}".format(i+1,test_count))
                 else:
                     print(errs)
                     raise paramiko.SSHException
                 sleep(0.5)
             print("Upload test has finished.")
-
+            
             self.results.append(self.AverageValues(self.downloadResults, test_length))
             self.results.append(self.AverageValues(self.uploadResults, test_length))
-
+            self.results.append(self.downTestAverage)
+            self.results.append(self.upTestAverage)
+            self.results.append(self.AverageOverallValue(self.downloadResults))
+            self.results.append(self.AverageOverallValue(self.uploadResults))
             return self.results
         
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
         
-        
+    
     
     def TestDownload(self, test_length, connectionType):
         testResults=[]
@@ -114,7 +138,7 @@ class SSHInstance:
         if(len(errs)==0):
             for line in lines[4:(4+test_length)]:
                 parts=line.split()
-                testResults.append(parts[6])
+                testResults.append(float(parts[6]))
         sleep(0.5)
         return testResults, errs
     
@@ -130,7 +154,7 @@ class SSHInstance:
         if(len(errs)==0):
             for line in lines[3:(3+test_length)]:
                 parts=line.split()
-                testResults.append(parts[6])
+                testResults.append(float(parts[6]))
         sleep(0.5)
         return testResults, errs
     

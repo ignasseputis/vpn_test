@@ -13,7 +13,7 @@ class SpeedTest:
         self.clientSSH=self.instanceClient.sshClient
         self.csv=kwargs['csv']
 
-    def InitiateSpeedtest(self, testName, test_count, test_length, connectionType, parameters):
+    def InitiateSpeedtest(self, test_count, test_length, connectionType, parameters):
         try:    
             self.CheckServer()
             self.CheckConnection()
@@ -41,14 +41,16 @@ class SpeedTest:
             return False
     
     def WriteData(self, results, test_length, parameters):
-        
         #if results complete, print to terminal and save to file
-        if(len(results[0])==test_length and len(results[1])==test_length and len(results[2])==test_length):
-            
-            self.csv.WriteData(parameters+[" Download ->"]+results[1]+[" Upload ->"]+results[2])
+            self.csv.WriteData(parameters+[" Download ->"]+results[1]+[" Download averages ->"]+
+                               results[3]+results[5]+[" Upload ->"]+results[2]+["Upload averages ->"]+results[4]+results[6])
             self.PrintInTerminal(test_length, results)
             
-                
+    def ResultsAverage(self, results):
+        downAverage=round(sum(results[1])/float(len(results[1])),2)
+        upAverage=round(sum(results[2])/float(len(results[2])),2)
+        return downAverage, upAverage
+
     def PrintInTerminal(self, test_length, results):
         print("Final speed test results:")
         print('|{label1:<10}|{label2:<10}|{label3:<10}|'.format(

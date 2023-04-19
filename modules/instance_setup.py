@@ -30,7 +30,7 @@ class VPNInstance:
         
         self.tun_lan=None
         self.tap_lan=None
-        self.deviceName=None
+        self.deviceInfo=None
         
         self.user=None
         self.pwd=None
@@ -128,12 +128,15 @@ class VPNInstance:
                 self.Login()
                 raise OSError
             else:
+                deviceInfo={"name": resp["data"]["static"]["device_name"], 
+                            "serial":resp["data"]["mnfinfo"]["serial"],
+                            "firmware":resp["data"]["static"]["fw_version"]}
+                
                 #displays device name and serial number
                 print("\n{0} device information:\nDevice name:\n{1}\nDevice serial No.:\n{2}\n"
-                .format(self.name,resp["data"]["static"]["device_name"],
-                    resp["data"]["mnfinfo"]["serial"]))
-                self.deviceName=resp["data"]["static"]["device_name"]
-                return resp["data"]["static"]["device_name"]
+                .format(self.name,deviceInfo["name"], deviceInfo["serial"]))
+                self.deviceInfo=deviceInfo
+                return deviceInfo
         except OSError  as err:
             print("Not responding. Trying again...")
             if(retries<5):
@@ -274,8 +277,7 @@ class VPNInstance:
                 if(self.type=="server"):
                     newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "1"}
                 if(self.type=="client"):
-                    newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "0"}
-                sleep(2)    
+                    newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "0"}   
                 return newTestConfig
             case _:
                 return testConfig
