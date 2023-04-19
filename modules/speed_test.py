@@ -13,19 +13,17 @@ class SpeedTest:
         self.clientSSH=self.instanceClient.sshClient
         self.csv=kwargs['csv']
 
-    def InitiateSpeedtest(self, testName, test_count, test_length, connectionType):
+    def InitiateSpeedtest(self, testName, test_count, test_length, connectionType, parameters):
         try:    
             self.CheckServer()
             self.CheckConnection()
-
-            self.csv.RemoveCSV()
 
             #get speed test results
             self.serverSSH.ServerSequence()
             results = self.clientSSH.ClientSequence(test_count, test_length, connectionType)
             
             if(len(results[0])==test_length and len(results[1])==test_length and len(results[2])==test_length):
-                self.WriteData(results, test_length, testName)
+                self.WriteData(results, test_length, parameters)
                 return True
             else:
                 print("Some of the data seems to have gotten lost.")
@@ -34,34 +32,33 @@ class SpeedTest:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
         except ZeroDivisionError as err:
             print("Zero tests are performed")
-            self.WriteError(testName)
+            self.WriteError(parameters)
             return False
         except (ConnectionResetError, paramiko.SSHException, TimeoutError, OSError) as err:
             print("Connectivity error. Moving on to other configuration...")
-            self.WriteError(testName)
+            self.WriteError(parameters)
             sleep(10)
             return False
     
-    def WriteData(self, results, test_length, testName):
+    def WriteData(self, results, test_length, parameters):
+        
+        #if results complete, print to terminal and save to file
+        if(len(results[0])==test_length and len(results[1])==test_length and len(results[2])==test_length):
+            
+            self.csv.WriteData(parameters+[" Download ->"]+results[1]+[" Upload ->"]+results[2])
+            self.PrintInTerminal(test_length, results)
+            
+                
+    def PrintInTerminal(self, test_length, results):
         print("Final speed test results:")
         print('|{label1:<10}|{label2:<10}|{label3:<10}|'.format(
                 label1="Time", label2="Download", label3="Upload"))
-        #if results complete, print to terminal and save to file
-        if(len(results[0])==test_length and len(results[1])==test_length and len(results[2])==test_length):
-            self.csv.WriteData([self.instanceClient.deviceName])
-            self.csv.WriteData([testName])
-            for i in range(test_length):
-                data=[results[0][i], results[1][i], results[2][i]]
-                print('|{time:>10}|{down:>10}|{up:>10}|'.format(
-                    time=results[0][i], down=results[1][i], up=results[2][i]))
-                self.csv.WriteData(data)
+        for i in range(test_length):
+            print('|{time:>10}|{down:>10}|{up:>10}|'.format(
+                time=results[0][i], down=results[1][i], up=results[2][i]))
 
-    def WriteError(self, testName):
-        self.csv.RemoveCSV()
-        self.csv.WriteData([self.instanceClient.deviceName])
-        self.csv.WriteData([testName])
-        self.csv.WriteData(["test has failed."])
-
+    def WriteError(self,parameters):
+        self.csv.WriteData(parameters+["Test has failed."])
 
     def CheckConnection(self):
         counter=0

@@ -6,6 +6,7 @@ class FTPInstance:
     def __init__(self, *args, **kwargs):
         self.ftp=None
         self.credentials=None
+        self.dirName=None
 
 
     def Connect(self, credentials):
@@ -21,6 +22,7 @@ class FTPInstance:
     
     def ChangeDir(self, dirName):
         if dirName != "":
+            self.dirName=dirName
             try:
                 self.ftp.cwd(dirName)
             except ftplib.all_errors:
@@ -34,6 +36,7 @@ class FTPInstance:
             self.ftp.storbinary('STOR '+newName, open(filename, 'rb'))
         except ftplib.error_temp:
             self.Connect(self.credentials)
+            self.ChangeDir(self.dirName)
             self.SendFile(filename, deviceName)
 
     

@@ -53,6 +53,12 @@ class SSHInstance:
         #connects to server instance
         self.SSHComm("iperf3 -s")
 
+    def GetLabels(self, test_length):
+        labels=[]
+        for i in range(test_length):
+            labels.append("{0}.00-{1}.00".format(i, i+1))
+        return labels
+
     def ClientSequence(self, test_count, test_length, connectionType):
         try:
             self.results=[]
@@ -95,11 +101,6 @@ class SSHInstance:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
         
         
-    def GetLabels(self, test_length):
-        labels=[]
-        for i in range(test_length):
-            labels.append("{0}.00-{1}.00".format(i, i+1))
-        return labels
     
     def TestDownload(self, test_length, connectionType):
         testResults=[]

@@ -274,7 +274,8 @@ class VPNInstance:
                 if(self.type=="server"):
                     newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "1"}
                 if(self.type=="client"):
-                    newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "0"}    
+                    newTestConfig = testConfig | {"tls_auth": HMACPath, "key_direction": "0"}
+                sleep(2)    
                 return newTestConfig
             case _:
                 return testConfig

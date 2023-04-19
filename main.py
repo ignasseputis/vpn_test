@@ -19,7 +19,6 @@ testHandler=None
 
 
 def InitializeModules():
-    global argumentParser
     allConfigs=InitializeConfigReader()
     newArgs=InitializeArgumentParser(allConfigs)
     InitializeFTP()
