@@ -89,7 +89,10 @@ class VPNInstance:
             if(resp["success"]==True):
                 print("Login to "+self.baseURL+" was successful\n")
                 #returns jwt token
-                token=resp["jwtToken"]
+                try:
+                    token=resp["jwtToken"]
+                except KeyError as err:
+                    token=resp["ubus_rpc_session"]
                 self.token=token
                 self.uploader=APIUploader(instance=self)
                 return token
