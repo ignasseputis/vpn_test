@@ -116,4 +116,10 @@ on the device, the device's serial number and the firmware used for the tests th
   > The collumns following "Upload averages" display the results of all of the performed upload tests averaged for each of the performed tests.
   > 
   > The collumn under the second "Overall average" displays the average value of all the values measured during the duration of all performed upload tests. 
-  >
+  
+![Screenshot from 2023-05-08 12-54-45](https://user-images.githubusercontent.com/78542745/236794531-5ea22179-b729-4755-8b11-c458bdb80fb1.png)
+![Screenshot from 2023-05-08 12-54-33](https://user-images.githubusercontent.com/78542745/236794536-c8456279-5d9d-42fe-b668-e7372b9c2dda.png)
+
+
+We can use the collected data to visually interpret the situation that is occuring while using each configuration. For these graphs, the selected values
+were the ones that are averaged by the time intervals throughout all of the tests.
