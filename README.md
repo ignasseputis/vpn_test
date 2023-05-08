@@ -89,7 +89,9 @@ The JSON configuration file has these main 4 parts:
 In this scenario, we have specified the test count, test length, protocol, LZO compression, encryption algorithm, 
 authentication algorithm, additional HMAC authentication and TLS cipher. This leaves the connection type (tun, tap) 
 and authentication type (TLS, TLS + PWD, PWD, PSK) not specified, which means that the combinations of these 2 variables will be tested.
+
 4. Wait for the program to finish its work.
+
 5. Check for the file in the FTP server. It should look something like this (since the opened file takes up a lot of horizontal space, it is split
 into 2 screenshots):
 ![Screenshot from 2023-05-08 11-46-35](https://user-images.githubusercontent.com/78542745/236779359-892d548d-35ef-477c-9c1c-0a92459bf5d8.png)
