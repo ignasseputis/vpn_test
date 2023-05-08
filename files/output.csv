@@ -2,7 +2,5 @@ Device name:,RUTX11,Instance Type:,server,Device serial no.:,1106345048,Firmware
 Device name:,RUTX10,Instance Type:,client,Device serial no.:,1105846118,Firmware used:,RUTX_R_00.07.03.4
 Test length:,3,Test count:,3
 Connection type,Authentication type,Protocol,LZO,Encryption protocol,TLS cipher,Authentication algorithm,Additional HMAC authentication,,0.00-1.00,1.00-2.00,2.00-3.00,,Test 1,Test 2,Test 3,Overall average:,,0.00-1.00,1.00-2.00,2.00-3.00,,Test 1,Test 2,Test 3,Overall average:,
-tun,tls,udp,,BF-CBC,all,sha1,none, Download ->,15.67,19.57,20.37, Download averages ->,19.2,19.97,16.43,18.53, Upload ->,11.46,16.2,18.93,Upload averages ->,14.03,18.97,13.59,15.53
-tun,tls,udp,,BF-CBC,all,sha1,tls-auth, Download ->,14.0,18.4,18.97, Download averages ->,15.3,19.87,16.2,17.12, Upload ->,9.24,15.23,15.73,Upload averages ->,14.0,12.9,13.31,13.4
-tun,tls,udp,,BF-CBC,all,sha1,tls-crypt, Download ->,12.63,16.13,19.8, Download averages ->,15.46,16.77,16.33,16.19, Upload ->,8.31,13.83,16.0,Upload averages ->,13.29,12.43,12.43,12.72
-tun,tls,udp,,BF-CBC,all,none,none, Download ->,15.1,18.97,20.47, Download averages ->,19.23,14.43,20.87,18.18, Upload ->,9.05,15.23,16.37,Upload averages ->,13.49,14.46,12.7,13.55
+tun,tls,udp,,BF-CBC,all,sha1,none, Download ->,3.72,8.35,12.27, Download averages ->,8.55,7.98,7.81,8.11, Upload ->,4.83,8.97,12.57,Upload averages ->,8.82,8.12,9.43,8.79
+tun,tls,udp,,BF-CBC,all,sha1,tls-auth, Download ->,4.12,9.36,15.2, Download averages ->,10.29,9.47,8.92,9.56, Upload ->,4.88,8.93,13.43,Upload averages ->,9.82,8.27,9.16,9.08

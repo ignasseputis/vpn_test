@@ -39,7 +39,8 @@ class APIUploader:
             if(retries<5):
                 return self.UploadFile(file, fileType, retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         
         
     def FileUpload(self, encryptionType):
@@ -70,7 +71,8 @@ class APIUploader:
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
         except OSError as err:
-            sys.exit("Could not read data off of files:\n{0}".format(err))
+            print("Could not read data off of files:\n{0}".format(err))
+            raise OSError
 
         print("All {name} files were uploaded correctly.\n".format(name=self.instance.name))
         return fileDict

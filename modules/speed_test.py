@@ -67,7 +67,8 @@ class SpeedTest:
             #checks if instance actually exists
         status=self.instanceClient.VPNStatus()
         if(not(self.instanceClient.name in status["data"])):
-            sys.exit("Instance not found")
+            print("Instance not found")
+            raise OSError
 
         #wait for OpenVPN client to become active 
         while(status["data"]["client"]["status"] != "1"):
@@ -96,7 +97,8 @@ class SpeedTest:
             #checks if instance actually exists
         status=self.instanceServer.VPNStatus()
         if(not(self.instanceServer.name in status["data"])):
-            sys.exit("Instance not found")
+            print("Instance not found")
+            raise OSError
 
         #wait for OpenVPN client to become active
         while(status["data"][self.instanceServer.name]["status"] != "2"):
@@ -135,7 +137,7 @@ class SpeedTest:
                 print("The {name} instance was disabled.".format(name=instance.name))
             else:
                 print("Disabling the {name} instance failed.".format(name=instance.name))
-                sys.exit("")
+                raise OSError
 
             sleep(5) 
         
@@ -147,7 +149,7 @@ class SpeedTest:
                 print("The {name} instance was enabled.\n".format(name=instance.name))
             else:
                 print("Enabling the {name} instance failed.".format(name=instance.name))
-                sys.exit("")
+                raise OSError
 
             sleep(5)
         except KeyError as err:
@@ -157,4 +159,5 @@ class SpeedTest:
             if(retries<5):
                 return self.DisableEnable(instance, retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")   
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError

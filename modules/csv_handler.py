@@ -8,7 +8,8 @@ class CSVHandler:
 
     def RemoveCSV(self):
         if(os.path.isfile(self.file)):
-                    os.remove(self.file)     
+            os.remove(self.file)
+            return True
 
 
     def GetLabels(self, test_length):
@@ -49,6 +50,7 @@ class CSVHandler:
             with open(self.file, 'a') as f:
                 writer = csv.writer(f)
                 writer.writerow(data)
+                return True
         except IOError as err:
             sys.exit("Writing file to {0} file was unsuccessful:\n{1}".format(self.file, err))
 

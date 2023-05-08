@@ -95,7 +95,6 @@ class ArgumentParser:
             if(conn.lower()=="tun" or conn.lower()=="tap"):
                 newConnections.append(conn)
         if(len(newConnections)==0):
-            print("No connection types were selected correctly. Testing will commence with all available options")
             newConnections = allOptions
         return newConnections
 
@@ -107,7 +106,6 @@ class ArgumentParser:
             if(authType.lower() in (option.lower() for option in allOptions)):
                 newAuthTypes.append(authType)
         if(len(newAuthTypes)==0):
-            print("No authentication types were selected correctly. Testing will commence with all available options")
             newAuthTypes = allOptions
         return newAuthTypes
 
@@ -124,7 +122,6 @@ class ArgumentParser:
                 or protocol.lower() in (protocolConfig["client"]["proto"]).lower()):
                     newProtocols.append(protocolConfig)
         if(len(newProtocols)==0):
-            print("No communication protocols were selected correctly. Testing will commence with all available options")
             newProtocols=protocolConfigs
         return newProtocols
 
@@ -158,7 +155,6 @@ class ArgumentParser:
                 if(arg.lower() == (cipherConfig["cipher"]).lower()):
                     newEncryption.append(cipherConfig)
         if(len(newEncryption)==0):
-            print("No encryption types were selected correctly. Testing will commence with all available options")
             newEncryption=cipherConfigs
         return newEncryption
     
@@ -174,7 +170,6 @@ class ArgumentParser:
                 if(arg.lower() == (cipherConfig["cipher"]).lower()):
                     newEncryption.append(cipherConfig)
         if(len(newEncryption)==0):
-            print("No encryption types were selected correctly. Testing will commence with all available options")
             newEncryption=cipherConfigs
         return newEncryption
 
@@ -190,7 +185,6 @@ class ArgumentParser:
                 if(arg.lower() == (authConfig["auth"]).lower()):
                     newAuthentication.append(authConfig)
         if(len(newAuthentication)==0):
-            print("No authentication algorithms were selected correctly. Testing will commence with all available options")
             newAuthentication=authConfigs
         return newAuthentication
 
@@ -206,7 +200,6 @@ class ArgumentParser:
                 if(arg.lower() == (HMACConfig["_tls_auth"]).lower()):
                     newHMAC.append(HMACConfig)
         if(len(newHMAC)==0):
-            print("No additional HMAC authentication options were selected correctly. Testing will commence with all available options")
             newHMAC=HMACConfigs
         return newHMAC
 
@@ -225,7 +218,6 @@ class ArgumentParser:
                     if(arg.lower() == (TLSConfig["tls_cipher"][0]).lower()):
                         newTLSCipher.append(TLSConfig)
         if(len(newTLSCipher)==0):
-            print("No authentication algorithms were selected correctly. Testing will commence with all available options")
             newTLSCipher=TLSConfigs
         return newTLSCipher
 

@@ -145,7 +145,8 @@ class VPNInstance:
             if(retries<5):
                 self.DeviceInfo(retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
 
@@ -170,7 +171,8 @@ class VPNInstance:
             if(retries<5):
                 return self.DeleteVPN(name, retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))    
 
@@ -205,7 +207,8 @@ class VPNInstance:
             if(retries<5):
                 return self.VPNStatus(retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
 
@@ -233,7 +236,8 @@ class VPNInstance:
             if(retries<5):
                 return self.CreateVPNInstance(retries=retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
 
@@ -265,7 +269,8 @@ class VPNInstance:
             if(retries<5):
                 return self.SetConfig(conf, retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
         except KeyError as err:
             sys.exit("Could not get data due to key error:\n{0}".format(err))
 
@@ -320,7 +325,8 @@ class VPNInstance:
             if(retries<5):
                 return self.ChangeLAN(configLAN, retries+1)
             else:
-                sys.exit("Device is unresponsive. Quitting...")
+                print("Device is unresponsive. Moving on to next configuration...")
+                raise OSError
 
     def SetUpVPN(self,connection, authentication, testConfig, additionalAuth=""):
         self.RemoveAll()

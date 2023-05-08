@@ -1,8 +1,10 @@
 from time import sleep
 import os
+import sys
 
 from modules.speed_test import SpeedTest
 from modules.csv_handler import CSVHandler
+from modules.certificate_verification import CertVerifier
 
 
 class TestHandler:
@@ -14,6 +16,7 @@ class TestHandler:
         self.arguments=kwargs["arguments"]
         self.outFile=kwargs["outFile"]
         self.csv=CSVHandler(outFile=self.outFile)
+        self.certVerifier=CertVerifier(server=self.instanceServer, client=self.instanceClient)
         
         
     def TestVPN(self):
@@ -102,26 +105,31 @@ class TestHandler:
             self.InitiateTest(connection, authentication, infoLine, newServerConfig, newClientConfig, newInfoDict, True)
 
     def InitiateTest(self, connection, authentication, infoLine, serverConfig, clientConfig, newInfoDict, hmac=False):
-        parameters=list(newInfoDict.values())
-        newClientConfig=clientConfig|{"remote": self.instanceServer.url}
+        try:
+            parameters=list(newInfoDict.values())
+            newClientConfig=clientConfig|{"remote": self.instanceServer.url}
 
-        print("Setting the configuration to:\n{0}\n".format(infoLine))
-        if(hmac==True):
-            hmac_line=serverConfig["_tls_auth"]
-        else:
-            hmac_line=""
-        self.instanceServer.SetUpVPN(connection, authentication, serverConfig, hmac_line)
-        self.instanceClient.SetUpVPN(connection, authentication, newClientConfig, hmac_line)
+            print("Setting the configuration to:\n{0}\n".format(infoLine))
+            if(hmac==True):
+                hmac_line=serverConfig["_tls_auth"]
+            else:
+                hmac_line=""
 
-        sleep(5)
+            if(self.certVerifier.VerifyClientCert() and self.certVerifier.VerifyServerCert()):
+                self.instanceServer.SetUpVPN(connection, authentication, serverConfig, hmac_line)
+                self.instanceClient.SetUpVPN(connection, authentication, newClientConfig, hmac_line)
 
-        speedTest=SpeedTest(server=self.instanceServer, client=self.instanceClient, output=self.outFile, csv=self.csv)
-        speedTest.InitiateSpeedtest(self.arguments.test_count, self.arguments.test_length, connection, parameters)
+                sleep(5)
 
-        #self.SendFile()
+                speedTest=SpeedTest(server=self.instanceServer, client=self.instanceClient, output=self.outFile, csv=self.csv)
+                speedTest.InitiateSpeedtest(self.arguments.test_count, self.arguments.test_length, connection, parameters)
 
-        print(infoLine)
-        print("\n\n")
+                print(infoLine)
+                print("\n\n")
+            else:
+                sys.exit("Some of the certificates are not valid anymore. Quitting...")
+        except OSError as err:
+            pass
     
     def SendFile(self):
         if(os.path.isfile(self.outFile)):
